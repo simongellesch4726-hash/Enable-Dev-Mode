@@ -1,0 +1,56 @@
+name: Build IPA
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '15.0'
+
+      - name: Build .app
+        run: |
+          xcodebuild -project DevModeEnabler.xcodeproj \
+                     -scheme DevModeEnabler \
+                     -configuration Release \
+                     -derivedDataPath build \
+                     -destination 'generic/platform=iOS' \
+                     CODE_SIGN_IDENTITY="" \
+                     CODE_SIGNING_REQUIRED=NO \
+                     CODE_SIGNING_ALLOWED=NO
+
+      - name: Install ldid
+        run: |
+          curl -L -o ldid https://github.com/ProcursusTeam/ldid/releases/latest/download/ldid_macosx_x86_64
+          chmod +x ldid
+          sudo mv ldid /usr/local/bin/
+
+      - name: Sign .app with dummy entitlements
+        run: |
+          APP_PATH="build/Build/Products/Release-iphoneos/DevModeEnabler.app"
+          echo '<?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict/></plist>' > ent.plist
+          ldid -Sent.plist "$APP_PATH/DevModeEnabler"
+
+      - name: Package IPA
+        run: |
+          APP_PATH="build/Build/Products/Release-iphoneos/DevModeEnabler.app"
+          mkdir Payload
+          cp -r "$APP_PATH" Payload/
+          zip -r DevModeEnabler.ipa Payload/
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: DevModeEnabler.ipa
+          path: DevModeEnabler.ipa
