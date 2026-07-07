@@ -36,6 +36,21 @@
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
+		F1A20011 /* Main group */ = {
+			isa = PBXGroup;
+			children = (
+				F1A2000C /* DevModeEnabler */,
+				F1A20012 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F1A20012 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		F1A2000C /* DevModeEnabler */ = {
 			isa = PBXGroup;
 			children = (
@@ -50,6 +65,38 @@
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F1A2000E /* DevModeEnabler */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F1A2001C /* Build configuration list for PBXNativeTarget "DevModeEnabler" */;
+			buildPhases = (
+				F1A20013 /* Sources */,
+				F1A2001D /* Frameworks */,
+				F1A20007 /* Copy Files */,
+			);
+			dependencies = (
+				F1A20015 /* PBXTargetDependency */,
+			);
+			name = DevModeEnabler;
+			productName = DevModeEnabler;
+			productReference = F1A2001E /* DevModeEnabler.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F1A2000F /* devmode_helper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F1A2001B /* Build configuration list for PBXNativeTarget "devmode_helper" */;
+			buildPhases = (
+				F1A20014 /* Sources */,
+			);
+			dependencies = (
+			);
+			name = devmode_helper;
+			productName = devmode_helper;
+			productReference = F1A20006 /* devmode_helper */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		F1A2000D /* Project object */ = {
@@ -95,6 +142,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F1A20014 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F1A2001F /* devmode_helper.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -104,6 +159,36 @@
 			targetProxy = F1A20016 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXContainerItemProxy section */
+		F1A20016 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F1A2000D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F1A2000F;
+			remoteInfo = devmode_helper;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		F1A2001E /* DevModeEnabler.app */ = {
+			isa = PBXFileReference;
+			explicitFileType = wrapper.application;
+			includeInIndex = 0;
+			path = DevModeEnabler.app;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F1A2001D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
 		F1A20017 /* Debug */ = {
@@ -231,6 +316,38 @@
 			};
 			name = Release;
 		};
+		F1A2001F /* DevModeEnabler */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = DevModeEnabler;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yourname.DevModeEnabler;
+				INFOPLIST_FILE = DevModeEnabler/Info.plist;
+				CODE_SIGN_ENTITLEMENTS = DevModeEnabler/DevModeEnabler.entitlements;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				CODE_SIGNING_ALLOWED = NO;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F1A20020 /* DevModeEnabler */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = DevModeEnabler;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yourname.DevModeEnabler;
+				INFOPLIST_FILE = DevModeEnabler/Info.plist;
+				CODE_SIGN_ENTITLEMENTS = DevModeEnabler/DevModeEnabler.entitlements;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				CODE_SIGNING_ALLOWED = NO;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -243,11 +360,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F1A2001B /* Build configuration list for PBXTarget "devmode_helper" */ = {
+		F1A2001B /* Build configuration list for PBXNativeTarget "devmode_helper" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F1A20019 /* Debug */,
 				F1A2001A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F1A2001C /* Build configuration list for PBXNativeTarget "DevModeEnabler" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F1A2001F /* DevModeEnabler */,
+				F1A20020 /* DevModeEnabler */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
