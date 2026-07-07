@@ -5,6 +5,7 @@
 	};
 	objectVersion = 56;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		F1A20001 /* DevModeEnablerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A20002 /* DevModeEnablerApp.swift */; };
 		F1A20003 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A20004 /* ContentView.swift */; };
@@ -91,13 +92,6 @@
 			files = (
 				F1A20001 /* DevModeEnablerApp.swift in Sources */,
 				F1A20003 /* ContentView.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		F1A20014 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
