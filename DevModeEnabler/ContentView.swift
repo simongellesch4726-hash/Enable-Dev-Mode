@@ -52,9 +52,7 @@ struct ContentView: View {
         }
     }
 
-    // MARK: - Run embedded helper
     private func runHelper(_ args: [String]) -> (output: String, status: Int32) {
-        // The helper is inside the app bundle
         guard let helperPath = Bundle.main.path(forResource: "devmode_helper", ofType: nil) else {
             return ("Helper not found", -1)
         }
