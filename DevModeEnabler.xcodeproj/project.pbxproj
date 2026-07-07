@@ -6,28 +6,44 @@
 	objectVersion = 56;
 	objects = {
 /* Begin PBXBuildFile section */
-		F1A2B3C4D5E6F7A8B9C0D1E2 /* DevModeEnablerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F7A8B9C0D1E3 /* DevModeEnablerApp.swift */; };
-		F1A2B3C4D5E6F7A8B9C0D1E4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F7A8B9C0D1E5 /* ContentView.swift */; };
-		F1A2B3C4D5E6F7A8B9C0D1E6 /* devmode_helper.c in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F7A8B9C0D1E7 /* devmode_helper.c */; };
+		F1A20001 /* DevModeEnablerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A20002 /* DevModeEnablerApp.swift */; };
+		F1A20003 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A20004 /* ContentView.swift */; };
+		F1A20005 /* devmode_helper in Copy Files */ = {isa = PBXBuildFile; fileRef = F1A20006 /* devmode_helper */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		F1A20007 /* Copy Files */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7; /* Resources */
+			files = (
+				F1A20005 /* devmode_helper in Copy Files */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		F1A2B3C4D5E6F7A8B9C0D1E3 /* DevModeEnablerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevModeEnablerApp.swift; sourceTree = "<group>"; };
-		F1A2B3C4D5E6F7A8B9C0D1E5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		F1A2B3C4D5E6F7A8B9C0D1E7 /* devmode_helper.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = devmode_helper.c; sourceTree = "<group>"; };
-		F1A2B3C4D5E6F7A8B9C0D1E8 /* devmode_helper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = devmode_helper.h; sourceTree = "<group>"; };
-		F1A2B3C4D5E6F7A8B9C0D1E9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F1A20002 /* DevModeEnablerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevModeEnablerApp.swift; sourceTree = "<group>"; };
+		F1A20004 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		F1A20006 /* devmode_helper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = devmode_helper; sourceTree = BUILT_PRODUCTS_DIR; };
+		F1A20008 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F1A20009 /* DevModeEnabler.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DevModeEnabler.entitlements; sourceTree = "<group>"; };
+		F1A2000A /* devmode_helper.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = devmode_helper.c; sourceTree = "<group>"; };
+		F1A2000B /* devmode_helper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = devmode_helper.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
-		F1A2B3C4D5E6F7A8B9C0D1EA /* DevModeEnabler */ = {
+		F1A2000C /* DevModeEnabler */ = {
 			isa = PBXGroup;
 			children = (
-				F1A2B3C4D5E6F7A8B9C0D1E3 /* DevModeEnablerApp.swift */,
-				F1A2B3C4D5E6F7A8B9C0D1E5 /* ContentView.swift */,
-				F1A2B3C4D5E6F7A8B9C0D1E7 /* devmode_helper.c */,
-				F1A2B3C4D5E6F7A8B9C0D1E8 /* devmode_helper.h */,
-				F1A2B3C4D5E6F7A8B9C0D1E9 /* Info.plist */,
+				F1A20002 /* DevModeEnablerApp.swift */,
+				F1A20004 /* ContentView.swift */,
+				F1A2000A /* devmode_helper.c */,
+				F1A2000B /* devmode_helper.h */,
+				F1A20008 /* Info.plist */,
+				F1A20009 /* DevModeEnabler.entitlements */,
 			);
 			path = DevModeEnabler;
 			sourceTree = "<group>";
@@ -35,18 +51,21 @@
 /* End PBXGroup section */
 
 /* Begin PBXProject section */
-		F1A2B3C4D5E6F7A8B9C0D1EB /* Project object */ = {
+		F1A2000D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
-					F1A2B3C4D5E6F7A8B9C0D1EC = {
+					F1A2000E = {
+						CreatedOnToolsVersion = 15.0;
+					};
+					F1A2000F = {
 						CreatedOnToolsVersion = 15.0;
 					};
 				};
 			};
-			buildConfigurationList = F1A2B3C4D5E6F7A8B9C0D1ED /* Build configuration list for PBXProject "DevModeEnabler" */;
+			buildConfigurationList = F1A20010 /* Build configuration list for PBXProject "DevModeEnabler" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -54,31 +73,46 @@
 				en,
 				Base,
 			);
-			mainGroup = F1A2B3C4D5E6F7A8B9C0D1EE /* Main group */;
-			productRefGroup = F1A2B3C4D5E6F7A8B9C0D1EF /* Products */;
+			mainGroup = F1A20011 /* Main group */;
+			productRefGroup = F1A20012 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F1A2B3C4D5E6F7A8B9C0D1EC /* DevModeEnabler */,
+				F1A2000E /* DevModeEnabler */,
+				F1A2000F /* devmode_helper */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		F1A2B3C4D5E6F7A8B9C0D1F0 /* Sources */ = {
+		F1A20013 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F1A2B3C4D5E6F7A8B9C0D1E2 /* DevModeEnablerApp.swift in Sources */,
-				F1A2B3C4D5E6F7A8B9C0D1E4 /* ContentView.swift in Sources */,
-				F1A2B3C4D5E6F7A8B9C0D1E6 /* devmode_helper.c in Sources */,
+				F1A20001 /* DevModeEnablerApp.swift in Sources */,
+				F1A20003 /* ContentView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F1A20014 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		F1A20015 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F1A2000F /* devmode_helper */;
+			targetProxy = F1A20016 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
-		F1A2B3C4D5E6F7A8B9C0D1F1 /* Debug */ = {
+		F1A20017 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -118,10 +152,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -133,7 +163,7 @@
 			};
 			name = Debug;
 		};
-		F1A2B3C4D5E6F7A8B9C0D1F2 /* Release */ = {
+		F1A20018 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -174,10 +204,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -189,19 +215,50 @@
 			};
 			name = Release;
 		};
+		F1A20019 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = devmode_helper;
+				CODE_SIGNING_ALLOWED = NO;
+				SDKROOT = iphoneos;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		F1A2001A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = devmode_helper;
+				CODE_SIGNING_ALLOWED = NO;
+				SDKROOT = iphoneos;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		F1A2B3C4D5E6F7A8B9C0D1ED /* Build configuration list for PBXProject "DevModeEnabler" */ = {
+		F1A20010 /* Build configuration list for PBXProject "DevModeEnabler" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				F1A2B3C4D5E6F7A8B9C0D1F1 /* Debug */,
-				F1A2B3C4D5E6F7A8B9C0D1F2 /* Release */,
+				F1A20017 /* Debug */,
+				F1A20018 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F1A2001B /* Build configuration list for PBXTarget "devmode_helper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F1A20019 /* Debug */,
+				F1A2001A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = F1A2B3C4D5E6F7A8B9C0D1EB /* Project object */;
+	rootObject = F1A2000D /* Project object */;
 }
