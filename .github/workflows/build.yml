@@ -1,83 +1,54 @@
 name: Build IPA
 
 on:
-  push:
-    branches: [main]
-  workflow_dispatch:
+  workflow_dispatch:   # manual trigger only
 
 jobs:
   build:
-    runs-on: macos-latest
-
+    runs-on: macos-26-arm64
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Show Xcode version
-        run: |
-          xcode-select -p
-          xcodebuild -version
+      - name: Set up Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '26.6.0'
 
-      - name: Build app
+      - name: Build .app (using -target, no scheme needed)
         run: |
-          set -e
-
-          xcodebuild \
-            -project DevModeEnabler.xcodeproj \
-            -scheme DevModeEnabler \
-            -configuration Release \
-            -derivedDataPath build \
-            -destination "generic/platform=iOS" \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO
+          xcodebuild -project DevModeEnabler.xcodeproj \
+                     -target DevModeEnabler \
+                     -configuration Release \
+                     -derivedDataPath build \
+                     -destination 'generic/platform=iOS' \
+                     CODE_SIGN_IDENTITY="" \
+                     CODE_SIGNING_REQUIRED=NO \
+                     CODE_SIGNING_ALLOWED=NO
 
       - name: Install ldid
         run: |
-          set -e
-
-          ARCH=$(uname -m)
-
-          if [ "$ARCH" = "arm64" ]; then
-            URL="https://github.com/ProcursusTeam/ldid/releases/latest/download/ldid_macosx_arm64"
-          else
-            URL="https://github.com/ProcursusTeam/ldid/releases/latest/download/ldid_macosx_x86_64"
-          fi
-
-          curl -L "$URL" -o ldid
+          curl -L -o ldid https://github.com/ProcursusTeam/ldid/releases/latest/download/ldid_macosx_x86_64
           chmod +x ldid
-          sudo mv ldid /usr/local/bin/ldid
+          sudo mv ldid /usr/local/bin/
 
-      - name: Sign app
+      - name: Sign .app and helper
         run: |
-          set -e
-
           APP_PATH="build/Build/Products/Release-iphoneos/DevModeEnabler.app"
-
-          cat > ent.plist <<EOF
-          <?xml version="1.0" encoding="UTF-8"?>
+          echo '<?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict/>
-          </plist>
-          EOF
-
+          <plist version="1.0"><dict/></plist>' > ent.plist
           ldid -Sent.plist "$APP_PATH/DevModeEnabler"
-
           if [ -f "$APP_PATH/devmode_helper" ]; then
             ldid -Sent.plist "$APP_PATH/devmode_helper"
           fi
 
       - name: Package IPA
         run: |
-          set -e
-
           APP_PATH="build/Build/Products/Release-iphoneos/DevModeEnabler.app"
-
-          mkdir -p Payload
-          cp -R "$APP_PATH" Payload/
-
-          zip -r DevModeEnabler.ipa Payload
+          mkdir Payload
+          cp -r "$APP_PATH" Payload/
+          zip -r DevModeEnabler.ipa Payload/
 
       - name: Upload IPA
         uses: actions/upload-artifact@v4
