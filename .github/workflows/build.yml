@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-26-arm64   # current runner image
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -15,9 +15,9 @@ jobs:
       - name: Set up Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '15.0'
+          xcode-version: '26.6.0'   # available on this runner
 
-      - name: Build .app
+      - name: Build .app and helper
         run: |
           xcodebuild -project DevModeEnabler.xcodeproj \
                      -scheme DevModeEnabler \
@@ -34,13 +34,16 @@ jobs:
           chmod +x ldid
           sudo mv ldid /usr/local/bin/
 
-      - name: Sign .app with dummy entitlements
+      - name: Sign .app and helper
         run: |
           APP_PATH="build/Build/Products/Release-iphoneos/DevModeEnabler.app"
           echo '<?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0"><dict/></plist>' > ent.plist
           ldid -Sent.plist "$APP_PATH/DevModeEnabler"
+          if [ -f "$APP_PATH/devmode_helper" ]; then
+            ldid -Sent.plist "$APP_PATH/devmode_helper"
+          fi
 
       - name: Package IPA
         run: |
