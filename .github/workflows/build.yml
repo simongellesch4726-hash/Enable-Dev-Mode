@@ -1,57 +1,93 @@
-name: Build IPA
+name: Build VLCCrossfade (arm64e, roothide)
 
 on:
-  workflow_dispatch:   # manual trigger only
+  push:
+    branches: [main]
+    tags: ["v*"]
+    paths:
+      - "tweak/**"
+      - ".github/workflows/build-tweak.yml"
+  pull_request:
+    paths:
+      - "tweak/**"
+      - ".github/workflows/build-tweak.yml"
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ubuntu-22.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Xcode
-        uses: maxim-lobanov/setup-xcode@v1
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential fakeroot rsync curl perl zip unzip xz-utils git ca-certificates
+          # Install ldid directly from ProcursusTeam release (static binary)
+          sudo curl -Lo /usr/local/bin/ldid \
+            https://github.com/ProcursusTeam/ldid/releases/download/v2.1.5-procursus7/ldid_2.1.5-procursus7_linux_amd64
+          sudo chmod +x /usr/local/bin/ldid
+
+      - name: Cache Theos
+        id: theos-cache
+        uses: actions/cache@v4
         with:
-          xcode-version: 'latest'
+          path: ~/theos
+          key: theos-roothide-${{ runner.os }}-v1
 
-      - name: Build .app (using target, no scheme required)
+      - name: Install roothide Theos
+        if: steps.theos-cache.outputs.cache-hit != 'true'
         run: |
-          xcodebuild -project DevModeEnabler.xcodeproj \
-                     -target DevModeEnabler \
-                     -configuration Release \
-                     -destination 'generic/platform=iOS' \
-                     CONFIGURATION_BUILD_DIR=./build \
-                     CODE_SIGN_IDENTITY="" \
-                     CODE_SIGNING_REQUIRED=NO \
-                     CODE_SIGNING_ALLOWED=NO
+          git clone --recursive https://github.com/roothide/theos ~/theos
+          # Toolchain (Linux, Swift + Obj-C)
+          mkdir -p ~/theos/toolchain
+          curl -L https://github.com/kabiroberai/swift-toolchain-linux/releases/latest/download/swift-5.8-ubuntu22.04.tar.xz \
+            | tar -xJ -C ~/theos/toolchain
+          # roothide SDKs
+          mkdir -p ~/theos/sdks
+          curl -L https://github.com/theos/sdks/archive/refs/heads/master.tar.gz \
+            | tar -xz --strip-components=1 -C ~/theos/sdks
 
-      - name: Install ldid
+      - name: Install MobileVLCKit
         run: |
-          curl -L -o ldid https://github.com/ProcursusTeam/ldid/releases/latest/download/ldid_macosx_x86_64
-          chmod +x ldid
-          sudo mv ldid /usr/local/bin/
-
-      - name: Sign .app and helper
-        run: |
-          APP_PATH="./build/DevModeEnabler.app"
-          echo '<?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0"><dict/></plist>' > ent.plist
-          ldid -Sent.plist "$APP_PATH/DevModeEnabler"
-          if [ -f "$APP_PATH/devmode_helper" ]; then
-            ldid -Sent.plist "$APP_PATH/devmode_helper"
+          # Use the nightly build (master) – this URL is guaranteed to exist
+          curl -L -o MobileVLCKit.xcframework.zip \
+            https://download.videolan.org/pub/videolan/vlc-iOS/master/MobileVLCKit.xcframework.zip
+          unzip -q MobileVLCKit.xcframework.zip -d $THEOS/lib
+          # Find the actual framework folder (architecture might be ios-arm64 or ios-arm64_arm64e)
+          FW_PATH=$(find $THEOS/lib/MobileVLCKit.xcframework -name "MobileVLCKit.framework" -type d | head -n1)
+          if [ -z "$FW_PATH" ]; then
+            echo "❌ MobileVLCKit.framework not found!"
+            exit 1
           fi
+          # Extract the directory containing the framework (the architecture folder)
+          FRAMEWORK_DIR=$(dirname "$FW_PATH")
+          echo "✅ Found MobileVLCKit at: $FRAMEWORK_DIR"
+          # Export for the next steps (make will use this via environment)
+          echo "MOBILEVLCKIT_PATH=$FRAMEWORK_DIR" >> $GITHUB_ENV
 
-      - name: Package IPA
+      - name: Build tweak (arm64e, roothide)
+        env:
+          THEOS: /home/runner/theos
         run: |
-          APP_PATH="./build/DevModeEnabler.app"
-          mkdir Payload
-          cp -r "$APP_PATH" Payload/
-          zip -r DevModeEnabler.ipa Payload/
+          export PATH="$THEOS/toolchain/linux/iphone/bin:$THEOS/toolchain/swift/usr/bin:$PATH"
+          cd tweak
+          make clean
+          # Pass the framework search path explicitly, overriding the Makefile if needed
+          make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=roothide \
+            VLCCrossfade_FRAMEWORK_SEARCH_PATHS="$MOBILEVLCKIT_PATH"
 
-      - name: Upload IPA
+      - name: Upload .deb artifact
         uses: actions/upload-artifact@v4
         with:
-          name: DevModeEnabler.ipa
-          path: DevModeEnabler.ipa
+          name: VLCCrossfade-roothide-arm64e
+          path: tweak/packages/*.deb
+          if-no-files-found: error
+
+      - name: Publish release on tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: tweak/packages/*.deb
+          generate_release_notes: true
