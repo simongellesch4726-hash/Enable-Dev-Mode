@@ -4,13 +4,6 @@ on:
   push:
     branches: [main]
     tags: ["v*"]
-    paths:
-      - "tweak/**"
-      - ".github/workflows/build-tweak.yml"
-  pull_request:
-    paths:
-      - "tweak/**"
-      - ".github/workflows/build-tweak.yml"
   workflow_dispatch:
 
 jobs:
@@ -24,7 +17,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
             build-essential fakeroot rsync curl perl zip unzip xz-utils git ca-certificates
-          # Install ldid directly from ProcursusTeam release (static binary)
           sudo curl -Lo /usr/local/bin/ldid \
             https://github.com/ProcursusTeam/ldid/releases/download/v2.1.5-procursus7/ldid_2.1.5-procursus7_linux_amd64
           sudo chmod +x /usr/local/bin/ldid
@@ -34,38 +26,18 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/theos
-          key: theos-roothide-${{ runner.os }}-v1
+          key: theos-roothide-${{ runner.os }}-v2
 
       - name: Install roothide Theos
         if: steps.theos-cache.outputs.cache-hit != 'true'
         run: |
           git clone --recursive https://github.com/roothide/theos ~/theos
-          # Toolchain (Linux, Swift + Obj-C)
           mkdir -p ~/theos/toolchain
           curl -L https://github.com/kabiroberai/swift-toolchain-linux/releases/latest/download/swift-5.8-ubuntu22.04.tar.xz \
             | tar -xJ -C ~/theos/toolchain
-          # roothide SDKs
           mkdir -p ~/theos/sdks
           curl -L https://github.com/theos/sdks/archive/refs/heads/master.tar.gz \
             | tar -xz --strip-components=1 -C ~/theos/sdks
-
-      - name: Install MobileVLCKit
-        run: |
-          # Use the nightly build (master) – this URL is guaranteed to exist
-          curl -L -o MobileVLCKit.xcframework.zip \
-            https://download.videolan.org/pub/videolan/vlc-iOS/master/MobileVLCKit.xcframework.zip
-          unzip -q MobileVLCKit.xcframework.zip -d $THEOS/lib
-          # Find the actual framework folder (architecture might be ios-arm64 or ios-arm64_arm64e)
-          FW_PATH=$(find $THEOS/lib/MobileVLCKit.xcframework -name "MobileVLCKit.framework" -type d | head -n1)
-          if [ -z "$FW_PATH" ]; then
-            echo "❌ MobileVLCKit.framework not found!"
-            exit 1
-          fi
-          # Extract the directory containing the framework (the architecture folder)
-          FRAMEWORK_DIR=$(dirname "$FW_PATH")
-          echo "✅ Found MobileVLCKit at: $FRAMEWORK_DIR"
-          # Export for the next steps (make will use this via environment)
-          echo "MOBILEVLCKIT_PATH=$FRAMEWORK_DIR" >> $GITHUB_ENV
 
       - name: Build tweak (arm64e, roothide)
         env:
@@ -74,9 +46,7 @@ jobs:
           export PATH="$THEOS/toolchain/linux/iphone/bin:$THEOS/toolchain/swift/usr/bin:$PATH"
           cd tweak
           make clean
-          # Pass the framework search path explicitly, overriding the Makefile if needed
-          make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=roothide \
-            VLCCrossfade_FRAMEWORK_SEARCH_PATHS="$MOBILEVLCKIT_PATH"
+          make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=roothide
 
       - name: Upload .deb artifact
         uses: actions/upload-artifact@v4
